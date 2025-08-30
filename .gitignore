@@ -1,0 +1,57 @@
+# Environment variables and secrets
+.env
+*.env
+token_info.json
+long_lived_token.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Media files (examples)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.mp4
+*.mov
+*.avi
+
+# Logs
+*.log
+logs/

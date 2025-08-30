@@ -1,0 +1,58 @@
+---
+# Instagram Post Configuration
+# Place your images in this media folder along with this post.yaml file
+
+# Main caption for your post (required)
+caption: |
+  Recent documentation from the western Gaza region reveals significant civilian casualties and displacement resulting from ongoing Israeli bombings of families sheltering. While official records indicate over 60,000 confirmed fatalities, other estimates suggest substantial numbers of individuals are dead or missing, including those detained, and those presumed deceased beneath structural debris. Professional assessments project total casualties may approach 200,000 when incorporating these additional factors.
+
+# Hashtags (optional) - can be a list or a string
+hashtags:
+  - Gaza
+
+# Alternative: hashtags as a single string
+# hashtags: "#photography #instagram #socialmedia #art #photooftheday"
+
+# Alt text for accessibility (recommended)
+# Helps visually impaired users understand your content
+alt_text: "Israeli bombings of families"
+
+# Location (optional)
+# Can be a location name or leave blank
+location: ""
+
+# User tags (optional)
+# Instagram accounts to tag in the post (without @ symbol)
+user_tags:
+  - 
+
+# Product tags (optional)
+# List product IDs if using Instagram Shopping
+product_tags: []
+
+# Branded content (optional)
+# Partner username if this is branded/sponsored content
+branded_content_partner: ""
+
+# Comment settings (optional, defaults to false)
+disable_comments: false
+
+# Like count visibility (optional, defaults to false)
+hide_like_count: false
+
+# Collaborators (optional)
+# List of Instagram usernames who are collaborators on this post
+collaborators: []
+
+# Post scheduling (optional)
+# Format: YYYY-MM-DD HH:MM:SS (in your timezone)
+# Leave blank to post immediately
+scheduled_publish_time: ""
+
+# Notes (optional)
+# Any additional notes or reminders (not posted to Instagram)
+notes: |
+  - Maximum 10 images per carousel post
+  - Single image will be posted as regular post
+  - Supported formats: JPG, PNG
+  - Images are uploaded in alphabetical order
