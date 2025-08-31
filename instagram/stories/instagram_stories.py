@@ -4,7 +4,8 @@ import cloudinary
 import cloudinary.uploader
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from project root
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
 # Configure Cloudinary
 cloudinary.config(
