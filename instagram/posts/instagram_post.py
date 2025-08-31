@@ -164,10 +164,10 @@ def upload_to_cloudinary(file_path):
             upload_result = cloudinary.uploader.upload(file_path, resource_type="video")
         else:
             upload_result = cloudinary.uploader.upload(file_path)
-        return upload_result['secure_url']
+        return upload_result['secure_url'], upload_result['public_id']
     except Exception as e:
         print(f"  ❌ Failed to upload {file_path}: {e}")
-        return None
+        return None, None
 
 def create_carousel_post(media_items, config):
     """Create a carousel post with multiple images/videos"""
@@ -177,7 +177,7 @@ def create_carousel_post(media_items, config):
     media_ids = []
     
     # Create media objects for each media item
-    for i, (media_url, media_type) in enumerate(media_items):
+    for i, (media_url, media_type, public_id) in enumerate(media_items):
         print(f"\n📸 Creating media {i+1}/{len(media_items)}...")
         
         url = f"https://graph.facebook.com/v18.0/{account_id}/media"
@@ -306,10 +306,35 @@ def publish_post(creation_id, config):
     
     return None
 
+def cleanup_cloudinary_files(public_ids):
+    """Delete uploaded files from Cloudinary to free up storage"""
+    if not public_ids:
+        return
+        
+    print(f"\n🧹 Cleaning up {len(public_ids)} files from Cloudinary...")
+    
+    for public_id in public_ids:
+        try:
+            # Determine resource type based on public_id or file extension
+            # For videos, we need to specify resource_type="video"
+            if any(ext in public_id.lower() for ext in ['.mp4', '_video', '/video/']):
+                result = cloudinary.uploader.destroy(public_id, resource_type="video")
+            else:
+                result = cloudinary.uploader.destroy(public_id)
+            
+            if result.get('result') == 'ok':
+                print(f"  ✅ Deleted: {public_id}")
+            else:
+                print(f"  ⚠️ Could not delete: {public_id} - {result}")
+        except Exception as e:
+            print(f"  ❌ Error deleting {public_id}: {e}")
+    
+    print("🧹 Cloudinary cleanup completed")
+
 def main():
     """Main function to post all images in media folder"""
     media_folder = os.path.join(os.path.dirname(__file__), 'media')
-    yaml_file = os.path.join(media_folder, 'post.yaml')
+    yaml_file = os.path.join(os.path.dirname(__file__), 'post.yaml')
     
     print("=== Instagram Multi-Image Poster ===\n")
     
@@ -342,33 +367,44 @@ def main():
     # Upload all media files to Cloudinary and track their types
     print("\n☁️ Uploading to Cloudinary...")
     media_items = []
+    public_ids = []
     for file in media_files:
-        url = upload_to_cloudinary(file)
-        if url:
+        url, public_id = upload_to_cloudinary(file)
+        if url and public_id:
             # Determine media type based on file extension
             media_type = 'video' if file.lower().endswith('.mp4') else 'image'
-            media_items.append((url, media_type))
+            media_items.append((url, media_type, public_id))
+            public_ids.append(public_id)
     
     if not media_items:
         print("\n❌ No media files were successfully uploaded")
         return
     
     # Create Instagram post
+    creation_id = None
     if len(media_items) > 1:
         # Create carousel post
         print(f"\n🎠 Creating carousel with {len(media_items)} media items...")
         creation_id = create_carousel_post(media_items, config)
     else:
         # Create single post
-        media_url, media_type = media_items[0]
+        media_url, media_type, public_id = media_items[0]
         print(f"\n📷 Creating single {'video' if media_type == 'video' else 'image'} post...")
         creation_id = create_single_post(media_url, media_type, config)
     
     # Publish the post
+    post_success = False
     if creation_id:
-        publish_post(creation_id, config)
+        published_id = publish_post(creation_id, config)
+        post_success = published_id is not None
     else:
         print("\n❌ Failed to create Instagram post")
+    
+    # Clean up Cloudinary files after successful posting
+    if post_success:
+        cleanup_cloudinary_files(public_ids)
+    else:
+        print("\n⚠️ Post was not successful, keeping files in Cloudinary for retry")
 
 if __name__ == "__main__":
     main()
