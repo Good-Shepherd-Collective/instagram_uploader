@@ -56,7 +56,7 @@ def parse_post_config(yaml_file_path):
     
     # Map YAML data to config
     if data:
-        config['caption'] = data.get('caption', '').strip()
+        config['caption'] = data.get('caption', '')
         
         # Handle hashtags (can be list or string)
         hashtags = data.get('hashtags', [])
